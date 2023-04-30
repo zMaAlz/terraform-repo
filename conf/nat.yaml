@@ -1,0 +1,11 @@
+#cloud-config
+ssh_pwauth: false
+users:
+  - name: t-admin
+    gecos: Admin User
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC/NdlCNjBJ6BWw7t1lqnx5e/A63e/G/GjmlhFtEHCNrYQzEz4meTRFzBrVhdSh5yAeZYAVnpyTYhWrQroRzJxlkpw4BlFs7jyKzcufhBcKAV/utJ/7NjTSFktBBwZn9Uw+XX8liGaYs9qY86vcitOLPN1T56BQJBbF9dbfWlyXByASQQ93gsB0DoaZJUtVQVMmxKGNtFJJzjH3yx4LW8uXalnUVWG0P9sOsXQ6w6YeZSbPVtrM18CyHlbMZBZ13e/im4OQxzfCbp/rlFAh9CK59oHrUAUwKtUei0adOOYb+5Ehtlk/WcwqC5kejL6w02lCmXQIzEPLrWfHWYgx1h5/BrVLZnmK+aoURWE/LiUbsvMMgJusWTOk32eci8/puYIHpT/8n1E3ICbM2pyDC1m+kB58UsuPzGwhiqPHdKw409i8g5HwHH1uCsTS3AR31I5PljA9pOpUtVTSRNXPtrK3uabkrfYcSd/KlxLhnpa1VoTWBW0WBDnQ62x46bg+XX8= maal@kingdom
