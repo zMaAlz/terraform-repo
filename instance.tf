@@ -26,47 +26,21 @@ resource "yandex_compute_instance" "nat-instance" {
     preemptible = true
   }  
 }
-# resource "yandex_compute_instance" "cicd-instance" {
-#   name        = "cicd-${var.YC_ACTIVE_ZONE}"
-#   folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
-#   hostname = "cicd-${var.YC_ACTIVE_ZONE}"
-#   platform_id = "standard-v1"
-#   zone        = var.YC_ACTIVE_ZONE
-#   resources {
-#     cores  = 4
-#     core_fraction = 5
-#     memory = 4
-#   }
-#   boot_disk {
-#     initialize_params {
-#       image_id = "fd80l3igojs610mh1ndg"
-#     }
-#   }
-#   network_interface {
-#     subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
-#     ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].cicd_instance_ip}"
-#   }
-#     metadata = {
-#         user-data = "${file(var.YC_INSTANS_CICD)}"
-#     }
-#   scheduling_policy {
-#     preemptible = true
-#   }  
-# }
-resource "yandex_compute_instance" "loadbalancer-instance" {
-  name        = "loadbalancer-${var.YC_ACTIVE_ZONE}"
+resource "yandex_compute_instance" "cicd-instance" {
+  name        = "cicd-${var.YC_ACTIVE_ZONE}"
   folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
-  hostname = "lb-${var.YC_ACTIVE_ZONE}"
+  hostname = "cicd-${var.YC_ACTIVE_ZONE}"
   platform_id = "standard-v1"
   zone        = var.YC_ACTIVE_ZONE
   resources {
     cores  = 4
     core_fraction = 10
-    memory = 4
+    memory = 6
   }
   boot_disk {
     initialize_params {
       image_id = "fd80l3igojs610mh1ndg"
+      size = 50
     }
   }
   secondary_disk {
@@ -76,6 +50,34 @@ resource "yandex_compute_instance" "loadbalancer-instance" {
   secondary_disk {
     disk_id = "${yandex_compute_disk.volume2.id}"
     device_name = "/dev/sdc"
+  }
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
+    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].cicd_instance_ip}"
+  }
+    metadata = {
+        user-data = "${file(var.YC_INSTANS_CICD)}"
+    }
+  scheduling_policy {
+    preemptible = true
+  }  
+}
+resource "yandex_compute_instance" "loadbalancer-instance" {
+  name        = "loadbalancer-${var.YC_ACTIVE_ZONE}"
+  folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
+  hostname = "lb-${var.YC_ACTIVE_ZONE}"
+  platform_id = "standard-v1"
+  zone        = var.YC_ACTIVE_ZONE
+  resources {
+    cores  = 4
+    core_fraction = 10
+    memory = 8
+  }
+  boot_disk {
+    initialize_params {
+      image_id = "fd80l3igojs610mh1ndg"
+      size = 100
+    }
   }
   network_interface {
     subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
@@ -204,8 +206,8 @@ resource "yandex_compute_instance_group" "kubenodes-group" {
     platform_id = "standard-v1"
     resources {
       cores  = 2
-      core_fraction = 5
-      memory = 4
+      core_fraction = 10
+      memory = 6
     }
     boot_disk {
       initialize_params {
@@ -245,9 +247,9 @@ output "instance_nat_ip_addr_nat-instance" {
 output "instance_ip_addr_nat-instance" {
   value = "${yandex_compute_instance.nat-instance.network_interface.0.ip_address}"
 }
-# output "instance_ip_addr_cicd-instance" {
-#   value = "${yandex_compute_instance.cicd-instance.network_interface.0.ip_address}"
-# }
+output "instance_ip_addr_cicd-instance" {
+  value = "${yandex_compute_instance.cicd-instance.network_interface.0.ip_address}"
+}
 output "instance_ip_addr_lb-instance" {
   value = "${yandex_compute_instance.loadbalancer-instance.network_interface.0.ip_address}"
 }
