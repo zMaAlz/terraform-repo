@@ -8,57 +8,50 @@ resource "yandex_dns_zone" "zone1" {
 }
 resource "yandex_dns_recordset" "rs1" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = var.YC_DNS_ZONE
+  name    = "gitlab"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs2" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "appchart.${var.YC_DNS_ZONE}"
+  name    = "appchart"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs3" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "grafana.${var.YC_DNS_ZONE}"
+  name    = "grafana"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs4" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "prometheus.${var.YC_DNS_ZONE}"
+  name    = "prometheus"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs5" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "alertmanager.${var.YC_DNS_ZONE}"
+  name    = "alertmanager"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs6" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "node-exporter.${var.YC_DNS_ZONE}"
+  name    = "node-exporter"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }
 resource "yandex_dns_recordset" "rs7" {
   zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "atlantis.${var.YC_DNS_ZONE}"
+  name    = "atlantis"
   type    = "A"
   ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
-}
-resource "yandex_dns_recordset" "rs8" {
-  zone_id = "${yandex_dns_zone.zone1.id}"
-  name    = "gitlab.${var.YC_DNS_ZONE}"
-  type    = "A"
-  ttl     = 200
-  data    = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+  data    = ["${yandex_vpc_address.addr.external_ipv4_address.0.address}"]
 }

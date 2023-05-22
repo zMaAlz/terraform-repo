@@ -32,6 +32,7 @@ resource "yandex_vpc_subnet" "lab-subnet-private" {
 }
 resource "yandex_vpc_address" "addr" {
   name = "public-ip"
+  folder_id = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
   external_ipv4_address {
     zone_id = var.YC_ACTIVE_ZONE
   }
@@ -46,7 +47,7 @@ resource "yandex_lb_network_load_balancer" "kube-lb" {
     target_port = 80
     external_address_spec {
       ip_version = "ipv4"
-      address = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
+      address = "${yandex_vpc_address.addr.external_ipv4_address.0.address}"
     }
   }
   attached_target_group {
@@ -61,4 +62,8 @@ resource "yandex_lb_network_load_balancer" "kube-lb" {
       }
     }
   }
+}
+
+output "external_ip_address" {
+  value = "${yandex_vpc_address.addr.external_ipv4_address.0.address}"
 }

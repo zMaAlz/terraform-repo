@@ -34,7 +34,7 @@ resource "yandex_compute_instance" "cicd-instance" {
   zone        = var.YC_ACTIVE_ZONE
   resources {
     cores  = 4
-    core_fraction = 10
+    core_fraction = 5
     memory = 6
   }
   boot_disk {
@@ -45,11 +45,11 @@ resource "yandex_compute_instance" "cicd-instance" {
   }
   secondary_disk {
     disk_id = "${yandex_compute_disk.volume1.id}"
-    device_name = "/dev/sdb"
+    device_name = "ceph1"
   }
   secondary_disk {
     disk_id = "${yandex_compute_disk.volume2.id}"
-    device_name = "/dev/sdc"
+    device_name = "ceph2"
   }
   network_interface {
     subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
@@ -70,13 +70,13 @@ resource "yandex_compute_instance" "loadbalancer-instance" {
   zone        = var.YC_ACTIVE_ZONE
   resources {
     cores  = 4
-    core_fraction = 10
+    core_fraction = 5
     memory = 8
   }
   boot_disk {
     initialize_params {
       image_id = "fd80l3igojs610mh1ndg"
-      size = 100
+      size = 60
     }
   }
   network_interface {
@@ -158,13 +158,13 @@ resource "yandex_compute_instance_group" "kubemaster-group" {
     platform_id = "standard-v1"
     resources {
       cores  = 2
-      core_fraction = 10
+      core_fraction = 5
       memory = 4
     }
     boot_disk {
       initialize_params {
         image_id = "fd80l3igojs610mh1ndg"
-        size = 50
+        size = 30
       }
     }
     network_interface {
@@ -206,13 +206,13 @@ resource "yandex_compute_instance_group" "kubenodes-group" {
     platform_id = "standard-v1"
     resources {
       cores  = 2
-      core_fraction = 10
-      memory = 6
+      core_fraction = 5
+      memory = 4
     }
     boot_disk {
       initialize_params {
         image_id = "fd80l3igojs610mh1ndg"
-        size = 60
+        size = 50
       }
     }
     network_interface {
