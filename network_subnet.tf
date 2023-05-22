@@ -46,7 +46,7 @@ resource "yandex_lb_network_load_balancer" "kube-lb" {
     target_port = 80
     external_address_spec {
       ip_version = "ipv4"
-      address = "${yandex_vpc_address.addr.ip}"
+      address = "${yandex_vpc_address.addr.external_ipv4_address[0]}"
     }
   }
   attached_target_group {
