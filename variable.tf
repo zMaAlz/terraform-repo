@@ -8,7 +8,7 @@ variable "YC_FOLDER_ID" {
   default = ""
 }
 variable "YC_WORK_FOLDER" {
-  default = "stage"
+  default = "stage-dev"
 }
 variable "YC_ACTIVE_ZONE" {
   default = "ru-central1-b"

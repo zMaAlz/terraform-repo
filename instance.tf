@@ -11,7 +11,7 @@ resource "yandex_compute_instance" "nat-instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd80mrhj8fl2oe87o4e1"
+      image_id = "fd8p2ku5ild2apkquv25"
     }
   }
   network_interface {
@@ -34,12 +34,12 @@ resource "yandex_compute_instance" "cicd-instance" {
   zone        = var.YC_ACTIVE_ZONE
   resources {
     cores  = 4
-    core_fraction = 5
+    core_fraction = 20
     memory = 6
   }
   boot_disk {
     initialize_params {
-      image_id = "fd80l3igojs610mh1ndg"
+      image_id = "fd8a6oof3af7o2kpb6r4"
       size = 50
     }
   }
@@ -70,12 +70,12 @@ resource "yandex_compute_instance" "loadbalancer-instance" {
   zone        = var.YC_ACTIVE_ZONE
   resources {
     cores  = 4
-    core_fraction = 5
+    core_fraction = 20
     memory = 8
   }
   boot_disk {
     initialize_params {
-      image_id = "fd80l3igojs610mh1ndg"
+      image_id = "fd8a6oof3af7o2kpb6r4"
       size = 60
     }
   }
@@ -108,7 +108,7 @@ resource "yandex_compute_instance_group" "kubeingress-group-lb" {
     }
     boot_disk {
       initialize_params {
-        image_id = "fd80l3igojs610mh1ndg"
+        image_id = "fd8a6oof3af7o2kpb6r4"
         size = 20
       }
     }
@@ -158,12 +158,12 @@ resource "yandex_compute_instance_group" "kubemaster-group" {
     platform_id = "standard-v1"
     resources {
       cores  = 2
-      core_fraction = 5
+      core_fraction = 20
       memory = 4
     }
     boot_disk {
       initialize_params {
-        image_id = "fd80l3igojs610mh1ndg"
+        image_id = "fd8a6oof3af7o2kpb6r4"
         size = 30
       }
     }
@@ -211,7 +211,7 @@ resource "yandex_compute_instance_group" "kubenodes-group" {
     }
     boot_disk {
       initialize_params {
-        image_id = "fd80l3igojs610mh1ndg"
+        image_id = "fd8a6oof3af7o2kpb6r4"
         size = 50
       }
     }
