@@ -26,10 +26,10 @@ resource "yandex_compute_instance" "nat-instance" {
     preemptible = true
   }  
 }
-resource "yandex_compute_instance" "cicd-instance" {
-  name        = "cicd-${var.YC_ACTIVE_ZONE}"
+resource "yandex_compute_instance" "ceph_instance" {
+  name        = "ceph-${var.YC_ACTIVE_ZONE}"
   folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
-  hostname = "cicd-${var.YC_ACTIVE_ZONE}"
+  hostname = "ceph-${var.YC_ACTIVE_ZONE}"
   platform_id = "standard-v1"
   zone        = var.YC_ACTIVE_ZONE
   resources {
@@ -40,7 +40,7 @@ resource "yandex_compute_instance" "cicd-instance" {
   boot_disk {
     initialize_params {
       image_id = "fd8a6oof3af7o2kpb6r4"
-      size = 50
+      size = 30
     }
   }
   secondary_disk {
@@ -53,7 +53,7 @@ resource "yandex_compute_instance" "cicd-instance" {
   }
   network_interface {
     subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
-    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].cicd_instance_ip}"
+    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].ceph_instance_ip}"
   }
     metadata = {
         user-data = "${file(var.YC_INSTANS_CICD)}"
@@ -62,10 +62,10 @@ resource "yandex_compute_instance" "cicd-instance" {
     preemptible = true
   }  
 }
-resource "yandex_compute_instance" "loadbalancer-instance" {
-  name        = "loadbalancer-${var.YC_ACTIVE_ZONE}"
+resource "yandex_compute_instance" "gitlab_instance" {
+  name        = "gitlab-${var.YC_ACTIVE_ZONE}"
   folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
-  hostname = "lb-${var.YC_ACTIVE_ZONE}"
+  hostname = "gitlab-${var.YC_ACTIVE_ZONE}"
   platform_id = "standard-v1"
   zone        = var.YC_ACTIVE_ZONE
   resources {
@@ -81,10 +81,38 @@ resource "yandex_compute_instance" "loadbalancer-instance" {
   }
   network_interface {
     subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
-    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].lb_instance_ip}"
+    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].gitlab_instance_ip}"
   }
     metadata = {
         user-data = "${file(var.YC_INSTANS_CICD)}"
+    }
+  scheduling_policy {
+    preemptible = true
+  }  
+}
+resource "yandex_compute_instance" "kubemaster_instance" {
+  name        = "kubemaster-${var.YC_ACTIVE_ZONE}"
+  folder_id   = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
+  hostname = "kubemaster-${var.YC_ACTIVE_ZONE}"
+  platform_id = "standard-v1"
+  zone        = var.YC_ACTIVE_ZONE
+  resources {
+    cores  = 4
+    core_fraction = 20
+    memory = 4
+  }
+  boot_disk {
+    initialize_params {
+      image_id = "fd8a6oof3af7o2kpb6r4"
+      size = 40
+    }
+  }
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
+    ip_address = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].kubemaster_instance_ip}"
+  }
+    metadata = {
+        user-data = "${file(var.YC_INSTANS_KUBE)}"
     }
   scheduling_policy {
     preemptible = true
@@ -145,54 +173,6 @@ resource "yandex_compute_instance_group" "kubeingress-group-lb" {
     max_opening_traffic_duration = 120
   }
 }
-resource "yandex_compute_instance_group" "kubemaster-group" {
-  name               = "kubemaster-group"
-  folder_id          = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
-  service_account_id = "${yandex_iam_service_account.robot.id}"
-  instance_template {
-    name = "kubemaster-{instance.index}"
-    hostname = "kubemaster-{instance.index}"
-    labels = { 
-      kube = "master"
-    }
-    platform_id = "standard-v1"
-    resources {
-      cores  = 2
-      core_fraction = 20
-      memory = 4
-    }
-    boot_disk {
-      initialize_params {
-        image_id = "fd8a6oof3af7o2kpb6r4"
-        size = 30
-      }
-    }
-    network_interface {
-      network_id =  "${yandex_vpc_network.lab-network.id}"
-      subnet_ids = ["${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"]
-    }
-    metadata = {
-        user-data = "${file(var.YC_INSTANS_KUBE)}"
-    }
-    scheduling_policy {
-      preemptible = true
-    }
-  }
-  scale_policy {
-    fixed_scale {
-      size = 3
-    }
-  }
-  allocation_policy {
-    zones = ["${var.YC_ACTIVE_ZONE}"]
-  }
-  deploy_policy {
-    max_expansion = 3
-    max_unavailable = 1
-    startup_duration = 60
-    strategy = "opportunistic"
-  }
-}
 resource "yandex_compute_instance_group" "kubenodes-group" {
   name               = "kubenodes-group"
   folder_id          = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
@@ -247,17 +227,17 @@ output "instance_nat_ip_addr_nat-instance" {
 output "instance_ip_addr_nat-instance" {
   value = "${yandex_compute_instance.nat-instance.network_interface.0.ip_address}"
 }
-output "instance_ip_addr_cicd-instance" {
-  value = "${yandex_compute_instance.cicd-instance.network_interface.0.ip_address}"
+output "instance_ip_addr_ceph_instance" {
+  value = "${yandex_compute_instance.ceph_instance.network_interface.0.ip_address}"
 }
-output "instance_ip_addr_lb-instance" {
-  value = "${yandex_compute_instance.loadbalancer-instance.network_interface.0.ip_address}"
+output "instance_ip_addr_gitlab_instance" {
+  value = "${yandex_compute_instance.gitlab_instance.network_interface.0.ip_address}"
+}
+output "instance_ip_addr_kubemaster_instance" {
+  value = "${yandex_compute_instance.kubemaster_instance.network_interface.0.ip_address}"
 }
 output "instance_ip_addr_kubenodes-instance" {
   value = "${yandex_compute_instance_group.kubenodes-group.instance_template.0.network_interface.0.ip_address}"
-}
-output "instance_ip_addr_kubemaster-instance" {
-  value = "${yandex_compute_instance_group.kubemaster-group.instance_template.0.network_interface.0.ip_address}"
 }
 output "instance_ip_addr_kubeingress-instance" {
   value = "${yandex_compute_instance_group.kubeingress-group-lb.instance_template.0.network_interface.0.ip_address}"
