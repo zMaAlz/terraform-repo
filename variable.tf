@@ -18,8 +18,8 @@ variable "YC_DNS_ZONE" {
 }
 variable "YC_ZONE_CIDR_NAT" {
   default = {
-    "ru-central1-a" = { subnet_private_cidr = "192.168.2.0/24", subnet_public_cidr = "10.2.2.0/24", nat_instance_ip = "10.2.2.254", ceph_instance_ip = "192.168.2.200", gitlab_instance_ip = "192.168.2.210", kubemaster_instance_ip = "192.168.2.220" }
-    "ru-central1-b" = { subnet_private_cidr = "192.168.3.0/24", subnet_public_cidr = "10.2.3.0/24", nat_instance_ip = "10.2.3.254", ceph_instance_ip = "192.168.3.200", gitlab_instance_ip = "192.168.3.210", kubemaster_instance_ip = "192.168.3.220" }
+    "ru-central1-a" = { subnet_private_cidr = "192.168.2.0/24", subnet_public_cidr = "10.2.2.0/24", nat_instance_ip = "10.2.2.254", ceph_instance_ip = "192.168.2.200", gitlab_instance_ip = "192.168.2.210", kubemaster_instance_ip = "192.168.2.220", kubenode1_instance_ip = "192.168.2.221", kubenode2_instance_ip = "192.168.2.222" }
+    "ru-central1-b" = { subnet_private_cidr = "192.168.3.0/24", subnet_public_cidr = "10.2.3.0/24", nat_instance_ip = "10.2.3.254", ceph_instance_ip = "192.168.3.200", gitlab_instance_ip = "192.168.3.210", kubemaster_instance_ip = "192.168.3.220", kubenode1_instance_ip = "192.168.3.221", kubenode2_instance_ip = "192.168.3.222" }
     }
 }
 variable "YC_INSTANS_NAT" {
