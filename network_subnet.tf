@@ -44,7 +44,16 @@ resource "yandex_lb_network_load_balancer" "kube-lb" {
   listener {
     name = "web-to-ingress"
     port = 8081
-    target_port = 80
+    target_port = 30436
+    external_address_spec {
+      ip_version = "ipv4"
+      address = "${yandex_vpc_address.addr.external_ipv4_address.0.address}"
+    }
+  }
+  listener {
+    name = "web-to-gitlab"
+    port = 8929
+    target_port = 8929
     external_address_spec {
       ip_version = "ipv4"
       address = "${yandex_vpc_address.addr.external_ipv4_address.0.address}"
@@ -53,14 +62,34 @@ resource "yandex_lb_network_load_balancer" "kube-lb" {
   attached_target_group {
     target_group_id = "${yandex_compute_instance_group.kubeingress-group-lb.load_balancer.0.target_group_id}"
     healthcheck {
-      name = "http"
+      name = "http-kuber-ing"
       interval = 15
       timeout = 10
       http_options {
-        port = 8081
+        port = 30436
         path = "/"
       }
     }
+  }
+  attached_target_group {
+    target_group_id = "${yandex_lb_target_group.target-gr-gitlab.id}"
+    healthcheck {
+      name = "http-gitlab-gr"
+      interval = 15
+      timeout = 10
+      http_options {
+        port = 8929
+        path = "/users/sign_in"
+      }
+    }
+  }
+}
+resource "yandex_lb_target_group" "target-gr-gitlab" {
+  name      = "gitlab-gr-lb"
+  folder_id = "${yandex_resourcemanager_folder.WORK_FOLDER.id}"
+  target {
+    subnet_id = "${yandex_vpc_subnet.lab-subnet-private["${var.YC_ACTIVE_ZONE}"].id}"
+    address   = "${var.YC_ZONE_CIDR_NAT["${var.YC_ACTIVE_ZONE}"].gitlab_instance_ip}"
   }
 }
 

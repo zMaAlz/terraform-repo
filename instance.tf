@@ -39,7 +39,7 @@ resource "yandex_compute_instance" "ceph_instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd8a6oof3af7o2kpb6r4"
+      image_id = "fd8j2v8vjlc2q1q4ksvk"
       size = 30
     }
   }
@@ -75,9 +75,9 @@ resource "yandex_compute_instance" "gitlab_instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd8a6oof3af7o2kpb6r4"
+      image_id = "fd8qssu7gclkmoi9flt4"
       size = 60
-      type = "network-ssd"
+      type = "network-hdd"
     }
   }
   network_interface {
@@ -104,9 +104,9 @@ resource "yandex_compute_instance" "kubemaster_instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd8a6oof3af7o2kpb6r4"
+      image_id = "fd8qssu7gclkmoi9flt4"
       size = 50
-      type = "network-ssd"
+      type = "network-hdd"
     }
   }
   network_interface {
@@ -133,9 +133,9 @@ resource "yandex_compute_instance" "kubenode1_instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd8a6oof3af7o2kpb6r4"
+      image_id = "fd8qssu7gclkmoi9flt4"
       size = 50
-      type = "network-ssd"
+      type = "network-hdd"
     }
   }
   network_interface {
@@ -162,9 +162,9 @@ resource "yandex_compute_instance" "kubenode2_instance" {
   }
   boot_disk {
     initialize_params {
-      image_id = "fd8a6oof3af7o2kpb6r4"
+      image_id = "fd8qssu7gclkmoi9flt4"
       size = 50
-      type = "network-ssd"
+      type = "network-hdd"
     }
   }
   network_interface {
@@ -196,7 +196,7 @@ resource "yandex_compute_instance_group" "kubeingress-group-lb" {
     }
     boot_disk {
       initialize_params {
-        image_id = "fd8a6oof3af7o2kpb6r4"
+        image_id = "fd8qssu7gclkmoi9flt4"
         size = 20
       }
     }
